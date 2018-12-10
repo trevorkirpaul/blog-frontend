@@ -1,9 +1,22 @@
 import React, { Component } from 'react';
+import gql from 'graphql-tag';
+import { Mutation } from 'react-apollo';
 
 import Form from 'components/Form';
 import Wrapper from 'components/Wrapper';
 import Title from 'components/Title';
 import Text, { ErrorText } from 'components/Text';
+import CreateUserMutation from 'mutations/CreateUserMutation';
+
+const CREATE_USER = gql`
+  mutation CreateUser($email: String, $password: String) {
+    createUser(email: $email, password: $password) {
+      email
+      password
+      id
+    }
+  }
+`;
 
 class CreateUser extends Component {
   constructor(props) {
@@ -57,12 +70,31 @@ class CreateUser extends Component {
         <Title>Create User</Title>
         <Text>Complete this form to being creating posts</Text>
         {error && <ErrorText>{error}</ErrorText>}
-        <Form
-          fields={fields}
-          handleOnChange={this.handleOnChange}
-          handleSubmit={this.handleSubmit}
-          loading={loading}
-        />
+
+        <Mutation mutation={CREATE_USER}>
+          {(createUser, { data, loading, error }) => {
+            // if (loading) {
+            //   return <Text>Loading...</Text>
+            // }
+
+            return (
+              <Form
+                fields={fields}
+                handleOnChange={this.handleOnChange}
+                handleSubmit={() =>
+                  createUser({
+                    variables: {
+                      email,
+                      password,
+                    },
+                  })
+                }
+                loading={loading}
+                error={error}
+              />
+            );
+          }}
+        </Mutation>
       </Wrapper>
     );
   }

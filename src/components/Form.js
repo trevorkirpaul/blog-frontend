@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { ErrorText } from 'components/Text';
+
 // styles
 
 const FormWrapper = styled.div``;
@@ -27,7 +29,7 @@ const Button = styled.button`
   }
 `;
 
-const Form = ({ fields, handleOnChange, handleSubmit, loading }) => {
+const Form = ({ fields, handleOnChange, handleSubmit, loading, error }) => {
   return (
     <FormWrapper>
       {fields &&
@@ -42,6 +44,7 @@ const Form = ({ fields, handleOnChange, handleSubmit, loading }) => {
           />
         ))}
 
+      {error && <ErrorText>{error.message}</ErrorText>}
       <Button onClick={handleSubmit}>
         {loading ? '...loading' : 'Log In'}
       </Button>
